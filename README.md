@@ -15,3 +15,31 @@
 - **¿Qué devuelve POST?** 201 Created, la representación de la orden con el id generado por el servidor, y el header Location apuntando al nuevo recurso.
 - **¿Y si la orden no existe?** 404 Not Found con el JSON de error. En cambio, una búsqueda por cliente sin resultados no es 404: es 200 con [], porque la colección sí existe aunque el filtro no encuentre nada.
 - **¿Qué contiene un error?** Un código estable y legible por máquina (error), útil para que el cliente tome decisiones, y un mensaje legible por humanos (message). No debe incluir stack traces ni detalles internos.
+
+## Experimento dentro de AWS
+
+| Experimento             | Evento                                                             | Pregunta                                                          | Resultado |
+|-------------------------|--------------------------------------------------------------------|-------------------------------------------------------------------|-- |
+| A. Campo desconocido    | `{"customerId":"CUST-1","product":"X","quantity":1,"color":"red"}` | ¿Falla o lo ignora?                                               | Lo ignora |
+| B. Tipo como string     | `{"customerId":"CUST-1","product":"X","quantity":"2"}`             | ¿Convierte `"2"` a Integer?                                       | Si convierte el `String` a `int` |
+| C. Tipo incompatible    | `{"customerId":"CUST-1","product":"X","quantity":"abc"}`           | ¿Qué error da y de dónde viene: de tu código o del runtime?       | El error viene del runtime|
+| D. Campo omitido        | `{"customerId":"CUST-1","product":"X"}`                            | ¿Llega `null` a tu código? (Debe responder tu `VALIDATION_ERROR`) | Sale un Error |
+| E. Mayúsculas distintas | `{"CustomerId":"CUST-1","product":"X","quantity":1}`               | ¿Respeta mayúsculas y minúsculas?                                 | Si |
+
+
+```mermaid
+flowchart TD
+    A["Evento JSON<br/>(consola Test o aws lambda invoke)"] --> B["Runtime Java 17 de AWS Lambda<br/>deserializa JSON → POJO"]
+    B --> C["OrderLambdaHandler::createOrder<br/>(CreateOrderRequest)"]
+    C --> D["OrderService.createOrder"]
+    D --> E["InMemoryOrderRepository"]
+    E --> D
+    D -->|"Order"| C
+    C -->|"Order / OrderFunctionException"| F["Runtime serializa Order → JSON<br/>o error → errorMessage/errorType"]
+    F --> G["Respuesta JSON"]
+
+    classDef aws fill:#FF9900,color:#000,stroke:#232F3E;
+    classDef java fill:#5382A1,color:#fff,stroke:#2b4a63;
+    class B,F aws;
+    class C,D,E java;
+```
