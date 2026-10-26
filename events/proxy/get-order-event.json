@@ -1,0 +1,79 @@
+{
+  "version": null,
+  "resource": "/orders/{id}",
+  "path": "/orders/ORD-001",
+  "httpMethod": "GET",
+  "headers": {
+    "accept": "*/*",
+    "Host": "25bvbxkdoh.execute-api.us-east-1.amazonaws.com",
+    "User-Agent": "curl/8.14.1",
+    "X-Amzn-Trace-Id": "Root=1-6ade9caf-2f5e9aae04725a546a9de701",
+    "X-Forwarded-For": "186.84.20.3",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "accept": [
+      "*/*"
+    ],
+    "Host": [
+      "25bvbxkdoh.execute-api.us-east-1.amazonaws.com"
+    ],
+    "User-Agent": [
+      "curl/8.14.1"
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-6ade9caf-2f5e9aae04725a546a9de701"
+    ],
+    "X-Forwarded-For": [
+      "186.84.20.3"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "id": "ORD-001"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "698065416622",
+    "stage": "dev",
+    "resourceId": "9muhr1",
+    "requestId": "857fe55e-129d-4249-a11a-6ba30115dfc4",
+    "operationName": null,
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "apiKey": null,
+      "principalOrgId": null,
+      "sourceIp": "186.84.20.3",
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "curl/8.14.1",
+      "user": null,
+      "accessKey": null
+    },
+    "resourcePath": "/orders/{id}",
+    "httpMethod": "GET",
+    "apiId": "25bvbxkdoh",
+    "path": "/dev/orders/ORD-001",
+    "authorizer": null,
+    "extendedRequestId": "F01rdEQWIAMELMg=",
+    "requestTime": "26/Oct/2026:00:19:59 +0000",
+    "requestTimeEpoch": 1792973999214,
+    "domainName": "25bvbxkdoh.execute-api.us-east-1.amazonaws.com",
+    "domainPrefix": "25bvbxkdoh",
+    "protocol": "HTTP/1.1"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

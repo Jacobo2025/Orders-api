@@ -1,0 +1,83 @@
+{
+  "version": null,
+  "resource": "/orders",
+  "path": "/orders",
+  "httpMethod": "GET",
+  "headers": {
+    "accept": "*/*",
+    "Host": "25bvbxkdoh.execute-api.us-east-1.amazonaws.com",
+    "User-Agent": "curl/8.14.1",
+    "X-Amzn-Trace-Id": "Root=1-6ade9cb1-73d91bb57530a2477a0429b6",
+    "X-Forwarded-For": "186.84.20.3",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "accept": [
+      "*/*"
+    ],
+    "Host": [
+      "25bvbxkdoh.execute-api.us-east-1.amazonaws.com"
+    ],
+    "User-Agent": [
+      "curl/8.14.1"
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-6ade9cb1-73d91bb57530a2477a0429b6"
+    ],
+    "X-Forwarded-For": [
+      "186.84.20.3"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": {
+    "customerId": "CUST-42"
+  },
+  "multiValueQueryStringParameters": {
+    "customerId": [
+      "CUST-42"
+    ]
+  },
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "698065416622",
+    "stage": "dev",
+    "resourceId": "g91miq",
+    "requestId": "63eb62c4-b5bb-465f-9f93-f697001412db",
+    "operationName": null,
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "apiKey": null,
+      "principalOrgId": null,
+      "sourceIp": "186.84.20.3",
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "curl/8.14.1",
+      "user": null,
+      "accessKey": null
+    },
+    "resourcePath": "/orders",
+    "httpMethod": "GET",
+    "apiId": "25bvbxkdoh",
+    "path": "/dev/orders",
+    "authorizer": null,
+    "extendedRequestId": "F01rwGPtIAMEMDQ=",
+    "requestTime": "26/Oct/2026:00:20:01 +0000",
+    "requestTimeEpoch": 1792974001159,
+    "domainName": "25bvbxkdoh.execute-api.us-east-1.amazonaws.com",
+    "domainPrefix": "25bvbxkdoh",
+    "protocol": "HTTP/1.1"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

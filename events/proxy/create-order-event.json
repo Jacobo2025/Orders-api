@@ -1,0 +1,81 @@
+{
+  "version": null,
+  "resource": "/orders",
+  "path": "/orders",
+  "httpMethod": "POST",
+  "headers": {
+    "accept": "*/*",
+    "content-type": "application/json",
+    "Host": "25bvbxkdoh.execute-api.us-east-1.amazonaws.com",
+    "User-Agent": "curl/8.14.1",
+    "X-Amzn-Trace-Id": "Root=1-6ade9cb1-5bd0ae191792692f71dc6233",
+    "X-Forwarded-For": "186.84.20.3",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "accept": [
+      "*/*"
+    ],
+    "content-type": [
+      "application/json"
+    ],
+    "Host": [
+      "25bvbxkdoh.execute-api.us-east-1.amazonaws.com"
+    ],
+    "User-Agent": [
+      "curl/8.14.1"
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-6ade9cb1-5bd0ae191792692f71dc6233"
+    ],
+    "X-Forwarded-For": [
+      "186.84.20.3"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "698065416622",
+    "stage": "dev",
+    "resourceId": "g91miq",
+    "requestId": "048cd43e-65de-4ed4-9338-8ca245651086",
+    "operationName": null,
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "apiKey": null,
+      "principalOrgId": null,
+      "sourceIp": "186.84.20.3",
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "curl/8.14.1",
+      "user": null,
+      "accessKey": null
+    },
+    "resourcePath": "/orders",
+    "httpMethod": "POST",
+    "apiId": "25bvbxkdoh",
+    "path": "/dev/orders",
+    "authorizer": null,
+    "extendedRequestId": "F01r0HFaIAMEnig=",
+    "requestTime": "26/Oct/2026:00:20:01 +0000",
+    "requestTimeEpoch": 1792974001569,
+    "domainName": "25bvbxkdoh.execute-api.us-east-1.amazonaws.com",
+    "domainPrefix": "25bvbxkdoh",
+    "protocol": "HTTP/1.1"
+  },
+  "body": "{\"customerId\":\"CUST-42\",\"product\":\"MacBook Air\",\"quantity\":1}",
+  "isBase64Encoded": false
+}
