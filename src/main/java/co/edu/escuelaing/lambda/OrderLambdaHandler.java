@@ -1,6 +1,5 @@
 package co.edu.escuelaing.lambda;
 
-
 import co.edu.escuelaing.model.CreateOrderRequest;
 import co.edu.escuelaing.model.Order;
 import co.edu.escuelaing.repository.InMemoryOrderRepository;
@@ -15,9 +14,10 @@ import java.util.function.Supplier;
  * Punto de entrada para AWS Lambda (integración directa / sin proxy).
  *
  * Handlers a configurar en la consola de Lambda:
- *   com.workshop.orders.lambda.OrderLambdaHandler::createOrder
- *   com.workshop.orders.lambda.OrderLambdaHandler::getOrder
- *   com.workshop.orders.lambda.OrderLambdaHandler::findOrdersByCustomer
+ *   co.edu.escuelaing.lambda.OrderLambdaHandler::createOrder
+ *   co.edu.escuelaing.lambda.OrderLambdaHandler::getOrder
+ *   co.edu.escuelaing.lambda.OrderLambdaHandler::findOrdersByCustomer
+ *   co.edu.escuelaing.lambda.OrderLambdaHandler::deleteOrder
  *
  * No depende de ninguna librería de AWS: el runtime de Lambda convierte
  * el JSON de entrada al tipo del parámetro y el valor de retorno a JSON.
@@ -54,6 +54,17 @@ public class OrderLambdaHandler {
 
     public List<Order> findOrdersByCustomer(FindOrdersInput input) {
         return execute(() -> service.getOrdersByCustomer(input == null ? null : input.getCustomerId()));
+    }
+
+    /**
+     * Reutiliza GetOrderInput porque la entrada es la misma: { "id": "..." }.
+     * No devuelve nada: en la arquitectura A, API Gateway convierte el éxito en 204.
+     */
+    public void deleteOrder(GetOrderInput input) {
+        execute(() -> {
+            service.deleteOrder(input == null ? null : input.getId());
+            return null;
+        });
     }
 
     /** Traduce excepciones de dominio a códigos de error de la función. */

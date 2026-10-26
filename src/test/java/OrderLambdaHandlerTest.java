@@ -1,4 +1,3 @@
-package co.edu.escuelaing;
 
 
 import co.edu.escuelaing.lambda.FindOrdersInput;
@@ -74,5 +73,24 @@ class OrderLambdaHandlerTest {
         List<Order> orders = handler.findOrdersByCustomer(new FindOrdersInput("CUST-42"));
 
         assertEquals(2, orders.size());
+    }
+
+    @Test
+    void deleteOrder_existingOrder_completesAndOrderIsGone() {
+        assertDoesNotThrow(() -> handler.deleteOrder(new GetOrderInput("ORD-003")));
+
+        OrderFunctionException ex = assertThrows(
+                OrderFunctionException.class,
+                () -> handler.getOrder(new GetOrderInput("ORD-003")));
+        assertEquals("ORDER_NOT_FOUND", ex.getCode());
+    }
+
+    @Test
+    void deleteOrder_missingOrder_reportsOrderNotFoundCode() {
+        OrderFunctionException ex = assertThrows(
+                OrderFunctionException.class,
+                () -> handler.deleteOrder(new GetOrderInput("ORD-999")));
+
+        assertEquals("ORDER_NOT_FOUND: Order ORD-999 does not exist", ex.getMessage());
     }
 }

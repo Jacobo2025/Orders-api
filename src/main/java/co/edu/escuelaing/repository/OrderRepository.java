@@ -1,6 +1,5 @@
 package co.edu.escuelaing.repository;
 
-
 import co.edu.escuelaing.model.Order;
 
 import java.util.List;
@@ -17,6 +16,12 @@ public interface OrderRepository {
     Optional<Order> findById(String id);
 
     List<Order> findByCustomerId(String customerId);
+
+    /**
+     * Elimina la orden con el id indicado.
+     * @return true si la orden existía y fue eliminada; false si no existía.
+     */
+    boolean deleteById(String id);
 
     String nextId();
 }

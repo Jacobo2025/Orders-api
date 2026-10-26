@@ -93,6 +93,9 @@ public class ApiGatewayOrdersHandler
         if (ORDER_BY_ID.equals(resource) && "GET".equals(method)) {
             return getOrder(event);
         }
+        if (ORDER_BY_ID.equals(resource) && "DELETE".equals(method)) {
+            return deleteOrder(event);
+        }
         return error(404, "ROUTE_NOT_FOUND", "No route for " + method + " " + resource);
     }
 
@@ -132,6 +135,17 @@ public class ApiGatewayOrdersHandler
         String customerId = param(event.getQueryStringParameters(), "customerId");
         List<Order> orders = service.getOrdersByCustomer(customerId);
         return json(200, orders);
+    }
+
+    /**
+     * Éxito → 204 sin body.
+     * Si la orden no existe, OrderService lanza OrderNotFoundException y el catch
+     * de handleRequest responde 404: no hace falta código nuevo para ese caso.
+     */
+    private APIGatewayProxyResponseEvent deleteOrder(APIGatewayProxyRequestEvent event) {
+        String id = param(event.getPathParameters(), "id");
+        service.deleteOrder(id);
+        return noContent();
     }
 
     // ---------------------------------------------------------------- helpers
@@ -185,6 +199,13 @@ public class ApiGatewayOrdersHandler
                 .withStatusCode(statusCode)
                 .withHeaders(headers)
                 .withBody(toJson(payload));
+    }
+
+    /** 204 No Content: sin body y, por tanto, sin Content-Type. */
+    private static APIGatewayProxyResponseEvent noContent() {
+        return new APIGatewayProxyResponseEvent()
+                .withStatusCode(204)
+                .withHeaders(new HashMap<>());
     }
 
     private static APIGatewayProxyResponseEvent error(int statusCode, String code, String message) {

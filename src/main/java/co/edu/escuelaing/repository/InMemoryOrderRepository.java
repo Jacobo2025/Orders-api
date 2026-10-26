@@ -1,6 +1,6 @@
 package co.edu.escuelaing.repository;
-import co.edu.escuelaing.model.Order;
 
+import co.edu.escuelaing.model.Order;
 
 import java.util.Comparator;
 import java.util.List;
@@ -47,6 +47,11 @@ public class InMemoryOrderRepository implements OrderRepository {
                 .filter(order -> order.getCustomerId().equals(customerId))
                 .sorted(Comparator.comparing(Order::getId))
                 .toList();
+    }
+
+    @Override
+    public boolean deleteById(String id) {
+        return orders.remove(id) != null;
     }
 
     @Override

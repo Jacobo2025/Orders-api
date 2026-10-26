@@ -1,6 +1,5 @@
 package co.edu.escuelaing.service;
 
-
 import co.edu.escuelaing.model.CreateOrderRequest;
 import co.edu.escuelaing.model.Order;
 import co.edu.escuelaing.repository.OrderRepository;
@@ -40,6 +39,20 @@ public class OrderService {
     public List<Order> getOrdersByCustomer(String customerId) {
         requireNotBlank(customerId, "customerId");
         return repository.findByCustomerId(customerId.trim());
+    }
+
+    /**
+     * Elimina una orden.
+     * Regla de dominio: no se puede eliminar una orden que no existe.
+     * El servicio no decide el status HTTP; solo informa el resultado
+     * (termina normalmente o lanza OrderNotFoundException).
+     */
+    public void deleteOrder(String id) {
+        requireNotBlank(id, "id");
+        String cleanId = id.trim();
+        if (!repository.deleteById(cleanId)) {
+            throw new OrderNotFoundException(cleanId);
+        }
     }
 
     private void validate(CreateOrderRequest request) {

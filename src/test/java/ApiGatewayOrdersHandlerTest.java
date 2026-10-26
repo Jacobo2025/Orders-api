@@ -1,6 +1,8 @@
 
 import co.edu.escuelaing.http.ApiGatewayOrdersHandler;
+import co.edu.escuelaing.model.Order;
 import co.edu.escuelaing.repository.InMemoryOrderRepository;
+import co.edu.escuelaing.repository.OrderRepository;
 import co.edu.escuelaing.service.OrderService;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
@@ -9,7 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,6 +40,12 @@ class ApiGatewayOrdersHandlerTest {
 
     private static APIGatewayProxyRequestEvent getById(String id) {
         return request("GET", "/orders/{id}")
+                .withPath("/orders/" + id)
+                .withPathParameters(Map.of("id", id));
+    }
+
+    private static APIGatewayProxyRequestEvent deleteById(String id) {
+        return request("DELETE", "/orders/{id}")
                 .withPath("/orders/" + id)
                 .withPathParameters(Map.of("id", id));
     }
@@ -162,6 +172,52 @@ class ApiGatewayOrdersHandlerTest {
         assertEquals("UNSUPPORTED_MEDIA_TYPE", body(response).get("error").asText());
     }
 
+    // ----------------------------------------------------- DELETE /orders/{id}
+
+    @Test
+    void deleteExistingOrder_returns204WithoutBody() {
+        APIGatewayProxyResponseEvent response = call(deleteById("ORD-003"));
+
+        assertEquals(204, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void deletedOrder_cannotBeRetrievedAnymore() throws Exception {
+        call(deleteById("ORD-003"));
+
+        APIGatewayProxyResponseEvent response = call(getById("ORD-003"));
+
+        assertEquals(404, response.getStatusCode());
+        assertEquals("ORDER_NOT_FOUND", body(response).get("error").asText());
+    }
+
+    @Test
+    void deleteMissingOrder_returns404WithErrorFormat() throws Exception {
+        APIGatewayProxyResponseEvent response = call(deleteById("ORD-999"));
+
+        assertEquals(404, response.getStatusCode());
+        assertEquals("ORDER_NOT_FOUND", body(response).get("error").asText());
+        assertEquals("Order ORD-999 does not exist", body(response).get("message").asText());
+    }
+
+    @Test
+    void deleteSameOrderTwice_secondReturns404() {
+        assertEquals(204, call(deleteById("ORD-003")).getStatusCode());
+        assertEquals(404, call(deleteById("ORD-003")).getStatusCode());
+    }
+
+    @Test
+    void createThenDelete_returns201Then204() throws Exception {
+        APIGatewayProxyResponseEvent created = call(post(
+                "{\"customerId\":\"CUST-9\",\"product\":\"Monitor\",\"quantity\":2}", JSON_HEADERS));
+        String id = body(created).get("id").asText();
+
+        APIGatewayProxyResponseEvent deleted = call(deleteById(id));
+
+        assertEquals(204, deleted.getStatusCode());
+    }
+
     // ------------------------------------------------------- integración/ruteo
 
     @Test
@@ -182,5 +238,51 @@ class ApiGatewayOrdersHandlerTest {
 
         assertEquals(404, response.getStatusCode());
         assertEquals("ROUTE_NOT_FOUND", body(response).get("error").asText());
+    }
+
+    // --------------------------------------------- error interno inesperado (§18)
+
+    /** Repositorio que simula una falla de infraestructura (por ejemplo, base de datos caída). */
+    private static OrderRepository brokenRepository() {
+        return new OrderRepository() {
+            @Override
+            public Order save(Order order) {
+                throw new IllegalStateException("database unavailable");
+            }
+
+            @Override
+            public Optional<Order> findById(String id) {
+                throw new IllegalStateException("database unavailable");
+            }
+
+            @Override
+            public List<Order> findByCustomerId(String customerId) {
+                throw new IllegalStateException("database unavailable");
+            }
+
+            @Override
+            public boolean deleteById(String id) {
+                throw new IllegalStateException("database unavailable");
+            }
+
+            @Override
+            public String nextId() {
+                return "ORD-X";
+            }
+        };
+    }
+
+    @Test
+    void unexpectedError_returns500WithoutInternalDetails() throws Exception {
+        ApiGatewayOrdersHandler brokenHandler =
+                new ApiGatewayOrdersHandler(new OrderService(brokenRepository()), false);
+
+        APIGatewayProxyResponseEvent response = brokenHandler.handleRequest(getById("ORD-001"), null);
+
+        assertEquals(500, response.getStatusCode());
+        assertEquals("INTERNAL_ERROR", body(response).get("error").asText());
+        assertEquals("Unexpected internal error", body(response).get("message").asText());
+        assertFalse(response.getBody().contains("database unavailable"),
+                "El detalle interno no debe llegar al cliente");
     }
 }

@@ -1,4 +1,5 @@
 
+
 import co.edu.escuelaing.model.CreateOrderRequest;
 import co.edu.escuelaing.model.Order;
 import co.edu.escuelaing.repository.InMemoryOrderRepository;
@@ -112,6 +113,53 @@ class OrderServiceTest {
     @ValueSource(strings = {"   "})
     void getOrdersByCustomer_blankCustomerId_throwsValidation(String customerId) {
         assertThrows(ValidationException.class, () -> service.getOrdersByCustomer(customerId));
+    }
+
+    // ---------- Eliminación ----------
+
+    @Test
+    void deleteOrder_existingOrder_removesIt() {
+        Order created = service.createOrder(new CreateOrderRequest("CUST-42", "MacBook Air", 1));
+
+        service.deleteOrder(created.getId());
+
+        assertThrows(OrderNotFoundException.class, () -> service.getOrder(created.getId()));
+    }
+
+    @Test
+    void deleteOrder_removesItFromCustomerSearch() {
+        Order created = service.createOrder(new CreateOrderRequest("CUST-42", "MacBook Air", 1));
+        service.createOrder(new CreateOrderRequest("CUST-42", "Mouse", 1));
+
+        service.deleteOrder(created.getId());
+
+        List<Order> remaining = service.getOrdersByCustomer("CUST-42");
+        assertEquals(1, remaining.size());
+        assertEquals("Mouse", remaining.get(0).getProduct());
+    }
+
+    @Test
+    void deleteOrder_nonExistingOrder_throwsOrderNotFound() {
+        OrderNotFoundException ex = assertThrows(
+                OrderNotFoundException.class,
+                () -> service.deleteOrder("ORD-999"));
+
+        assertEquals("ORD-999", ex.getOrderId());
+    }
+
+    @Test
+    void deleteOrder_twice_secondTimeThrowsOrderNotFound() {
+        Order created = service.createOrder(new CreateOrderRequest("CUST-42", "MacBook Air", 1));
+        service.deleteOrder(created.getId());
+
+        assertThrows(OrderNotFoundException.class, () -> service.deleteOrder(created.getId()));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   "})
+    void deleteOrder_blankId_throwsValidation(String id) {
+        assertThrows(ValidationException.class, () -> service.deleteOrder(id));
     }
 
     // ---------- Entrada inválida ----------
